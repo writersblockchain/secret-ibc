@@ -5,11 +5,12 @@ dotenv.config();
 
 const wallet = new Wallet(process.env.MNEMONIC);
 
-const contract_wasm = fs.readFileSync("../contract.wasm.gz");
-// const codeId = 22569;
-// const contractCodeHash =
-//   "328af17aa2bad04c20cb4d1b3aa81978685597b59fcc9be22bb5190f36290d68";
-// const contractAddress = "secret1gydnetx0rzcnuenw2tq3zwltgn23tmv67r0320";
+const contract_wasm = fs.readFileSync("../contract/contract.wasm.gz");
+const codeId = 22582;
+const contractCodeHash =
+  "951cbc1b87b3d360f9a18aaf3fe152a2777bd0d5b595c1509f0980ef45441a36";
+//ibc hooks contract address
+const contractAddress = "secret1pcvs9n8sh80scmrkunaw8cr32de588m6gvg43m";
 
 const secretjs = new SecretNetworkClient({
   chainId: "pulsar-2",
@@ -47,14 +48,14 @@ let upload_contract = async () => {
 // upload_contract();
 
 let instantiate_contract = async () => {
-  const initMsg = { flip: 4 };
+  const initMsg = {};
   let tx = await secretjs.tx.compute.instantiateContract(
     {
       code_id: codeId,
       sender: wallet.address,
       code_hash: contractCodeHash,
       init_msg: initMsg,
-      label: "rng tutorial" + Math.ceil(Math.random() * 10000),
+      label: "ibc hooks" + Math.ceil(Math.random() * 10000),
     },
     {
       gasLimit: 400_000,
@@ -70,33 +71,3 @@ let instantiate_contract = async () => {
 };
 
 // instantiate_contract();
-
-let try_flip = async () => {
-  const flip_tx = await secretjs.tx.compute.executeContract(
-    {
-      sender: wallet.address,
-      contract_address: contractAddress,
-      msg: {
-        flip: {},
-      },
-      code_hash: contractCodeHash,
-    },
-    { gasLimit: 100_000 }
-  );
-
-  console.log(flip_tx);
-};
-// try_flip();
-
-let query_flip = async () => {
-  let flip_tx = await secretjs.query.compute.queryContract({
-    contract_address: contractAddress,
-    code_hash: contractCodeHash,
-    query: {
-      get_flip: {},
-    },
-  });
-  console.log(flip_tx);
-};
-
-query_flip();

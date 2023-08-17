@@ -2,7 +2,7 @@
 name = "ibc-hooks-contract"
 version = "0.0.1"
 authors = ["SCRT Labs <info@scrtlabs.com>"]
-edition = "2018"
+edition = "2021"
 description = "A Test contract intended to use in integration tests for the Secret Netowrk"
 license = "MIT"
 
