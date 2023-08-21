@@ -6,15 +6,15 @@ dotenv.config();
 const wallet = new Wallet(process.env.MNEMONIC);
 
 const contract_wasm = fs.readFileSync("../contract/contract.wasm.gz");
-const codeId = 22582;
+const codeId = 710;
 const contractCodeHash =
   "951cbc1b87b3d360f9a18aaf3fe152a2777bd0d5b595c1509f0980ef45441a36";
 //ibc hooks contract address
-const contractAddress = "secret1pcvs9n8sh80scmrkunaw8cr32de588m6gvg43m";
+const contractAddress = "secret1pjel0vvsz4nt3w5vrqkaaxscaxnlum8f7cjala";
 
 const secretjs = new SecretNetworkClient({
-  chainId: "pulsar-2",
-  url: "https://api.pulsar.scrttestnet.com",
+  chainId: "pulsar-3",
+  url: "https://api.pulsar3.scrttestnet.com",
   wallet: wallet,
   walletAddress: wallet.address,
 });
@@ -70,4 +70,4 @@ let instantiate_contract = async () => {
   console.log(contractAddress);
 };
 
-// instantiate_contract();
+instantiate_contract();
