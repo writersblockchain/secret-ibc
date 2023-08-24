@@ -25,6 +25,8 @@ secretcli config output json
 
 secretcli keys list
 
-secretcli query tx 56FCD9CD33D1AA0F2886CA81B5CC32B5E4CAE9D665B0240559A419ADAD41597D
+secretcli query tx CD36D69D128BC378145EF8131BF52C7DEEA503B78E4DABFCE0D4F5D0BF669BB8
 
 secret15k9rjfpu4jhfwtgdgswpy46fa4s0af54ncgwmk
+
+secretcli query compute list-contract-by-code 1
