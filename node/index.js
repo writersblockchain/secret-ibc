@@ -1,16 +1,18 @@
-import { SecretNetworkClient, Wallet } from "secretjs";
+import {
+  Wallet,
+  SecretNetworkClient,
+  EncryptionUtilsImpl,
+  fromUtf8,
+  MsgExecuteContractResponse,
+} from "secretjs";
 import * as fs from "fs";
 import dotenv from "dotenv";
 dotenv.config();
 
 const wallet = new Wallet(process.env.MNEMONIC);
-
-const contract_wasm = fs.readFileSync("./contract.wasm.gz");
-// const codeId = 710;
-// const contractCodeHash =
-//   "951cbc1b87b3d360f9a18aaf3fe152a2777bd0d5b595c1509f0980ef45441a36";
-
-// const contractAddress = "secret1pjel0vvsz4nt3w5vrqkaaxscaxnlum8f7cjala";
+let contractAddress = "secret15k9rjfpu4jhfwtgdgswpy46fa4s0af54ncgwmk";
+let contractCodeHash =
+  "c74bc4b0406507257ed033caa922272023ab013b0c74330efc16569528fa34fe";
 
 const secretjs = new SecretNetworkClient({
   chainId: "secretdev-1",
@@ -19,56 +21,29 @@ const secretjs = new SecretNetworkClient({
   walletAddress: wallet.address,
 });
 
-let upload_contract = async () => {
-  let tx = await secretjs.tx.compute.storeCode(
+const viewing_key = async () => {
+  // Entropy: Secure implementation is left to the client, but it is recommended to use base-64 encoded random bytes and not predictable inputs.
+  const entropy = "Another really random thing";
+
+  let handleMsg = { create_viewing_key: { entropy: entropy } };
+  console.log("Creating viewing key");
+  tx = await secretjs.tx.compute.executeContract(
     {
       sender: wallet.address,
-      wasm_byte_code: contract_wasm,
-      source: "",
-      builder: "",
+      contract_address: contractAddress,
+      code_hash: contractCodeHash, // optional but way faster
+      msg: handleMsg,
+      sent_funds: [], // optional
     },
     {
-      gasLimit: 4_000_000,
+      gasLimit: 100_000,
     }
   );
-  console.log(tx);
 
-  //   const codeId = Number(
-  //     tx.arrayLog.find((log) => log.type === "message" && log.key === "code_id")
-  //       .value
-  //   );
-
-  //   console.log("codeId: ", codeId);
-
-  //   const contractCodeHash = (
-  //     await secretjs.query.compute.codeHashByCodeId({ code_id: codeId })
-  //   ).code_hash;
-  //   console.log(`Contract hash: ${contractCodeHash}`);
+  // Convert the UTF8 bytes to String, before parsing the JSON for the api key.
+  const apiKey = JSON.parse(
+    fromUtf8(MsgExecuteContractResponse.decode(tx.data[0]).data)
+  ).create_viewing_key.key;
+  console.log(apiKey);
 };
-
-upload_contract();
-
-// let instantiate_contract = async () => {
-//   const initMsg = {};
-//   let tx = await secretjs.tx.compute.instantiateContract(
-//     {
-//       code_id: codeId,
-//       sender: wallet.address,
-//       code_hash: contractCodeHash,
-//       init_msg: initMsg,
-//       label: "ibc hooks" + Math.ceil(Math.random() * 10000),
-//     },
-//     {
-//       gasLimit: 400_000,
-//     }
-//   );
-
-//   //Find the contract_address in the logs
-//   const contractAddress = tx.arrayLog.find(
-//     (log) => log.type === "message" && log.key === "contract_address"
-//   ).value;
-
-//   console.log(contractAddress);
-// };
-
-// instantiate_contract();
+viewing_key();

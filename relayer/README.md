@@ -87,7 +87,13 @@ secretcli q bank balances secret1he7t2wxzpmfuxfrw7qjg52vu4qljq3l53k7uf3
 
 secretcli config node http://localhost:26657
 secretcli q bank balances secret1he7t2wxzpmfuxfrw7qjg52vu4qljq3l53k7uf3
-secretcli tx ibc-transfer transfer transfer channel-0 secret1he7t2wxzpmfuxfrw7qjg52vu4qljq3l53k7uf3 1234uscrt --from c
+secretcli tx ibc-transfer transfer transfer channel-0 secret1he7t2wxzpmfuxfrw7qjg52vu4qljq3l53k7uf3 1000000uscrt --from c
 
 5.  secretcli config node http://localhost:36657
     secretcli q bank balances secret1he7t2wxzpmfuxfrw7qjg52vu4qljq3l53k7uf3
+
+6.
+
+secretcli tx ibc-transfer transfer transfer channel-0 secret1he7t2wxzpmfuxfrw7qjg52vu4qljq3l53k7uf3 1003709uscrt --from c
+
+secretcli query tx
